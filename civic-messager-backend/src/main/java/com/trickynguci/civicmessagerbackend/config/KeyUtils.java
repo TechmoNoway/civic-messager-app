@@ -28,30 +28,30 @@ public class KeyUtils {
 
     private final Environment environment;
 
-    @Value("access_token.private")
+    @Value("${access-token.private}")
     private String accessTokenPrivateKeyPath;
 
-    @Value("access_token.public")
+    @Value("${access-token.public}")
     private String accessTokenPublicKeyPath;
 
-    @Value("refresh_token.private")
+    @Value("${refresh-token.private}")
     private String refreshTokenPrivateKeyPath;
 
-    @Value("refresh_token.public")
+    @Value("${refresh-token.public}")
     private String refreshTokenPublicKeyPath;
 
     private KeyPair _accessTokenKeyPair;
     private KeyPair _refreshTokenKeyPair;
 
     private KeyPair getAccessTokenKeyPair() {
-        if (Objects.isNull(_accessTokenKeyPair)){
+        if (Objects.isNull(_accessTokenKeyPair)) {
             _accessTokenKeyPair = getKeyPair(accessTokenPublicKeyPath, accessTokenPrivateKeyPath);
         }
         return _accessTokenKeyPair;
     }
 
     private KeyPair getRefreshTokenKeyPair() {
-        if (Objects.isNull(_accessTokenKeyPair)){
+        if (Objects.isNull(_refreshTokenKeyPair)) {
             _refreshTokenKeyPair = getKeyPair(refreshTokenPublicKeyPath, refreshTokenPrivateKeyPath);
         }
         return _refreshTokenKeyPair;
@@ -125,6 +125,5 @@ public class KeyUtils {
     public RSAPrivateKey getRefreshTokenPrivateKey() {
         return (RSAPrivateKey) getRefreshTokenKeyPair().getPrivate();
     };
-
 
 }

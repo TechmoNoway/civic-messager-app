@@ -41,7 +41,7 @@ public class UserAPI {
     }
 
     @GetMapping("/getUserById")
-    public ResponseEntity<?> doGetUserById(@RequestParam("id") int id) {
+    public ResponseEntity<?> doGetUserById(@RequestParam("id") String id) {
         HashMap<String, Object> result = new HashMap<>();
         try {
             result.put("success", true);

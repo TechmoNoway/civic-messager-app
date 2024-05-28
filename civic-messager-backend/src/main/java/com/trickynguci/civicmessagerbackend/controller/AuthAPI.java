@@ -17,7 +17,7 @@ import java.util.Collections;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 public class AuthAPI {
 
     private final UserDetailsManager userDetailsManager;

@@ -9,7 +9,7 @@ public interface UserService {
 
     List<User> getAllUsers();
 
-    Optional<User> getUserById(String id);
+    Optional<User> getUserById(int id);
 
 
 

@@ -3,6 +3,7 @@ package com.trickynguci.civicmessagerbackend.config;
 import com.trickynguci.civicmessagerbackend.dto.TokenDTO;
 import com.trickynguci.civicmessagerbackend.model.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -21,10 +22,12 @@ import java.time.temporal.ChronoUnit;
 @RequiredArgsConstructor
 public class TokenGenerator {
 
-    private final JwtEncoder accessTokenEncoder;
+    @Autowired
+    JwtEncoder accessTokenEncoder;
 
+    @Autowired
     @Qualifier("jwtRefreshTokenEncoder")
-    private final JwtEncoder refreshTokenEncoder;
+    JwtEncoder refreshTokenEncoder;
 
     private String createAccessToken(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
@@ -34,7 +37,7 @@ public class TokenGenerator {
                 .issuer("myApp")
                 .issuedAt(now)
                 .expiresAt(now.plus(5, ChronoUnit.MINUTES))
-                .subject(user.getId())
+                .subject(String.valueOf(user.getId()))
                 .build();
 
         return accessTokenEncoder.encode(JwtEncoderParameters.from(claimsSet)).getTokenValue();
@@ -48,36 +51,37 @@ public class TokenGenerator {
                 .issuer("myApp")
                 .issuedAt(now)
                 .expiresAt(now.plus(30, ChronoUnit.DAYS))
-                .subject(user.getId())
+                .subject(String.valueOf(user.getId()))
                 .build();
 
-        return accessTokenEncoder.encode(JwtEncoderParameters.from(claimsSet)).getTokenValue();
+        return refreshTokenEncoder.encode(JwtEncoderParameters.from(claimsSet)).getTokenValue();
     }
 
     public TokenDTO createToken(Authentication authentication) {
-        if (!((authentication.getPrincipal()) instanceof User user)) {
-            throw new BadCredentialsException(MessageFormat.format("principal {0} is not of User type", authentication.getPrincipal().getClass()));
+        if (!(authentication.getPrincipal() instanceof User user)) {
+            throw new BadCredentialsException(
+                    MessageFormat.format("principal {0} is not of User type", authentication.getPrincipal().getClass())
+            );
         }
 
         TokenDTO tokenDTO = new TokenDTO();
-        tokenDTO.setUserId(user.getId());
+        tokenDTO.setUserId(String.valueOf(user.getId()));
         tokenDTO.setAccessToken(createAccessToken(authentication));
 
-        String refreshToken = "";
-
+        String refreshToken;
         if (authentication.getCredentials() instanceof Jwt jwt) {
             Instant now = Instant.now();
-
             Instant expiresAt = jwt.getExpiresAt();
             Duration duration = Duration.between(now, expiresAt);
-            long daysUntilExpires = duration.toDays();
-            if (daysUntilExpires < 7) {
+            long daysUntilExpired = duration.toDays();
+            if (daysUntilExpired < 7) {
                 refreshToken = createRefreshToken(authentication);
-            } else  {
+            } else {
                 refreshToken = jwt.getTokenValue();
             }
+        } else {
+            refreshToken = createRefreshToken(authentication);
         }
-
         tokenDTO.setRefreshToken(refreshToken);
 
         return tokenDTO;

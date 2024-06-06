@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
@@ -26,6 +23,9 @@ public class TokenGenerator {
     JwtEncoder accessTokenEncoder;
 
     @Autowired
+    JwtDecoder accessTokenDecoder;
+
+    @Autowired
     @Qualifier("jwtRefreshTokenEncoder")
     JwtEncoder refreshTokenEncoder;
 
@@ -36,7 +36,7 @@ public class TokenGenerator {
         JwtClaimsSet claimsSet = JwtClaimsSet.builder()
                 .issuer("myApp")
                 .issuedAt(now)
-                .expiresAt(now.plus(5, ChronoUnit.MINUTES))
+                .expiresAt(now.plus(60, ChronoUnit.MINUTES))
                 .subject(String.valueOf(user.getId()))
                 .build();
 

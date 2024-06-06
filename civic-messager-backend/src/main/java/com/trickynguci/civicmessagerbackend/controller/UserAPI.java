@@ -18,9 +18,7 @@ import java.util.HashMap;
 @RequestMapping("/api/v1/users")
 public class UserAPI {
 
-
     private final UserService userService;
-
 
     @GetMapping("/getAllUsers")
     public ResponseEntity<?> doGetAllUsers() {
@@ -55,11 +53,7 @@ public class UserAPI {
             log.error("error: ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
         }
-
-
     }
-
-
 
 
 }

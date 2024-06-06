@@ -3,7 +3,6 @@ package com.trickynguci.civicmessagerbackend.service.Impl;
 import com.trickynguci.civicmessagerbackend.model.User;
 import com.trickynguci.civicmessagerbackend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;

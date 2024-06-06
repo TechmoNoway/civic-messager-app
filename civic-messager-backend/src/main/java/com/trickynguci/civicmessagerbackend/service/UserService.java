@@ -9,9 +9,9 @@ public interface UserService {
 
     List<User> getAllUsers();
 
-    Optional<User> getUserById(int id);
+    User getUserById(int id);
 
-
+    boolean isUsernameExist(String username);
 
 
 }

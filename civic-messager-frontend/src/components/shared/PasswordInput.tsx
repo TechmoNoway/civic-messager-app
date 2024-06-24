@@ -18,7 +18,6 @@ const PasswordInput = forwardRef<HTMLInputElement, InputProps>(
         <Input
           type={showPassword ? "text" : "password"}
           className={cn("hide-password-toggle pr-10", className)}
-          placeholder="Password"
           ref={ref}
           {...props}
         />

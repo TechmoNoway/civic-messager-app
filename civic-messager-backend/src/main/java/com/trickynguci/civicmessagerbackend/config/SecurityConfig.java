@@ -43,12 +43,15 @@ public class SecurityConfig {
     private final UserDetailsManager userDetailsManager;
 
 
-    private static final String[] WHITE_LIST_URL = {"/api/v1/**",
+    private static final String[] WHITE_LIST_URL = {
+            "/api/v1/**",
+            "/ws/**",
             "/swagger-resources",
             "/swagger-resources/**",
             "/swagger-ui/**",
             "/v3/api-docs/**",
-            "/swagger-ui.html"};
+            "/swagger-ui.html"
+    };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -56,6 +59,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(WHITE_LIST_URL).permitAll()
                         .requestMatchers("/api/v1").permitAll()
+                        .requestMatchers("/ws").permitAll()
                         .anyRequest()
                         .authenticated()
                 )

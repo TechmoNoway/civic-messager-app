@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/civic-messager-backend.main.iml" filepath="$PROJECT_DIR$/.idea/modules/civic-messager-backend.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/civic-messaging-app.iml" filepath="$PROJECT_DIR$/.idea/civic-messaging-app.iml" />
-    </modules>
-  </component>
-</project>

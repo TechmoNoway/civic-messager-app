@@ -19,8 +19,10 @@ import { useGoogleLogin } from "@react-oauth/google";
 import { login } from "@/services/AuthService";
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
-import { useUserContext } from "@/context/AuthContext";
-import { Loader } from "lucide-react";
+import { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
+import PasswordInput from "@/components/shared/PasswordInput";
+import Loading from "@/components/shared/Loading";
 
 const formSchema = z.object({
   username: z.string().min(4, {
@@ -33,8 +35,44 @@ const formSchema = z.object({
 
 function SigninForm() {
   const navigate = useNavigate();
-  const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
   const { toast } = useToast();
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const checkAuthUser = async () => {
+    const token = localStorage.getItem("token");
+
+    if (token == undefined || token == null || token == "") {
+      return;
+    } else {
+      const decodedToken = jwtDecode(token || "");
+      const currentUnixTimestamp = Math.floor(Date.now() / 1000);
+
+      if (
+        decodedToken.exp !== undefined &&
+        decodedToken.exp > currentUnixTimestamp
+      ) {
+        navigate("/");
+        toast({
+          title: "Welcome back!",
+        });
+      } else {
+        localStorage.setItem("token", "");
+        if (location.pathname != "/sign-in") {
+          toast({
+            variant: "destructive",
+            title: "Opps! Login session expired",
+            description: "Please login again.",
+          });
+        }
+        navigate("/sign-in");
+      }
+    }
+  };
+
+  useEffect(() => {
+    checkAuthUser();
+  }, []);
 
   const loginWithGoogle = useGoogleLogin({
     onSuccess: (credentialResponse) => {
@@ -54,35 +92,27 @@ function SigninForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
     const response = await login(values);
-    if (response && response.data) {
-      form.reset();
-      toast({
-        title: "Login successfully",
-      });
+    if (response && response.data.data) {
+      setIsLoading(false);
       localStorage.setItem(
         "token",
         JSON.stringify(response.data.data.accessToken)
       );
-      const isLoggedIn = await checkAuthUser();
-
-      if (isLoggedIn) {
-        form.reset();
-
-        navigate("/");
-      } else {
-        return toast({
-          variant: "destructive",
-          title: "Opps! Sign in failed",
-          action: <ToastAction altText="Try again">Try again</ToastAction>,
-        });
-      }
+      navigate("/");
+      toast({
+        title: "Login successfully",
+      });
     } else {
+      setIsLoading(false);
       toast({
         variant: "destructive",
-        title: "Opps! Username already exists",
-        description: "Please choose a new username.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
+        title: "Opps! Wrong Credentials",
+        description: "Your username or password can be wrong.",
+        action: (
+          <ToastAction altText="Try again">Try again</ToastAction>
+        ),
       });
     }
   }
@@ -91,7 +121,9 @@ function SigninForm() {
     <>
       <Form {...form}>
         <div className="sm:w-420 flex flex-col">
-          <h2 className="text-[30px] text-blue-900 font-bold">Sign In</h2>
+          <h2 className="text-[30px] text-blue-900 font-bold">
+            Sign In
+          </h2>
 
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -102,7 +134,9 @@ function SigninForm() {
               name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-blue-900">Username</FormLabel>
+                  <FormLabel className="text-blue-900">
+                    Username
+                  </FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Username"
@@ -120,10 +154,8 @@ function SigninForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-blue-900">Password</FormLabel>
                   <FormControl>
-                    <Input
-                      type="password"
+                    <PasswordInput
                       placeholder="Password"
                       className="py-7 w-96 font-medium text-base bg-gray-100 border-none"
                       {...field}
@@ -134,10 +166,13 @@ function SigninForm() {
               )}
             />
 
-            <Button type="submit" className="bg-blue-500 py-6 text-xl">
-              {isUserLoading ? (
+            <Button
+              type="submit"
+              className="bg-blue-500 py-6 text-xl"
+            >
+              {isLoading ? (
                 <div className="flex-center gap-2">
-                  <Loader />
+                  <Loading />
                 </div>
               ) : (
                 "Sign in"

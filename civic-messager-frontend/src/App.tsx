@@ -4,9 +4,10 @@ import AuthLayout from "./_auth/AuthLayout";
 import SigninForm from "./_auth/forms/SigninForm";
 import "./globals.css";
 import RootLayout from "./_root/RootLayout";
-import { Home } from "./_root/pages";
+import { Home, TestPage } from "./_root/pages";
 import SignupForm from "./_auth/forms/SignupForm";
 import { Toaster } from "./components/ui/toaster";
+import MessagePage from "./components/shared/MessagePage";
 
 function App() {
   return (
@@ -21,7 +22,10 @@ function App() {
 
           {/* Private Routes */}
           <Route element={<RootLayout />}>
-            <Route index element={<Home />} />
+            <Route path="/" element={<Home />}>
+              <Route path=":userId" element={<MessagePage />} />
+            </Route>
+            <Route path="/test" element={<TestPage />} />
           </Route>
         </Routes>
 

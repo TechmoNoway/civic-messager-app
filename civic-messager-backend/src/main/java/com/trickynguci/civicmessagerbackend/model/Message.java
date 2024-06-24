@@ -3,10 +3,7 @@ package com.trickynguci.civicmessagerbackend.model;
 
 import com.trickynguci.civicmessagerbackend.enums.MediaType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.sql.Timestamp;
 
@@ -15,8 +12,9 @@ import java.sql.Timestamp;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Table(name = "message")
-public class Message {
+public class Message  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,14 +31,16 @@ public class Message {
     @Lob
     private String content;
 
+    private String status;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "media_type")
     private MediaType mediaType;
-
 
     private String mediaUrl;
 
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp timestamp;
+
 
 }

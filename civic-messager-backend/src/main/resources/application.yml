@@ -32,7 +32,5 @@ server:
   port: 8081
 client:
   url: http://localhost:5173
-logging:
-  level:
-    org.springframework.security: DEBUG
+
 

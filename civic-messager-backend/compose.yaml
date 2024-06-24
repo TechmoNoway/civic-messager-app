@@ -1,17 +1,31 @@
+version: '3.8'
+
 services:
 #  mysql:
 #    image: 'mysql:latest'
 #    environment:
 #      - 'MYSQL_DATABASE=mydatabase'
-#      - 'MYSQL_PASSWORD=secret'
-#      - 'MYSQL_ROOT_PASSWORD=verysecret'
+#      - 'MYSQL_PASSWORD=332003'
+#      - 'MYSQL_ROOT_PASSWORD=332003'
 #      - 'MYSQL_USER=myuser'
 #    ports:
 #      - '3306'
   rabbitmq:
-    image: 'rabbitmq:latest'
+    image: 'rabbitmq:management'
+    hostname: 'rabbitmq'
     environment:
-      - 'RABBITMQ_DEFAULT_PASS=secret'
-      - 'RABBITMQ_DEFAULT_USER=myuser'
+      RABBITMQ_DEFAULT_USER: 'guest'
+      RABBITMQ_DEFAULT_PASS: 'guest'
+      RABBITMQ_STOMP_ENABLED: 'true'
     ports:
-      - '5672'
+      - '5672:5672'
+      - '15672:15672'
+      - '61613:61613'
+      - '15674:15674'
+    restart: always
+    
+       
+#  redis:
+#    image: 'redis:latest'
+#    ports:
+#      - '6379:6379'

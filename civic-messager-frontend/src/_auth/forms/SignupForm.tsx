@@ -65,6 +65,7 @@ function SignupForm() {
     } else if (response && response.data) {
       toast({
         title: "Registration successful",
+        description: "Now go sign in to your account.",
       });
       navigate("/sign-in");
       console.log(response);
@@ -126,6 +127,7 @@ function SignupForm() {
               <FormItem>
                 <FormControl>
                   <PasswordInput
+                    placeholder="Password"
                     className="py-7 w-96 font-medium text-base bg-gray-100 border-none"
                     {...field}
                   />
@@ -141,9 +143,8 @@ function SignupForm() {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="Confirm password"
+                  <PasswordInput
+                    placeholder="Confirm Password"
                     className="py-7 w-96 font-medium text-base bg-gray-100 border-none"
                     {...field}
                   />
